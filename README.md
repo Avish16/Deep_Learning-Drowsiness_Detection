@@ -3,7 +3,7 @@
 ## Open the model page & download weights
 
 **GitHub Pages (metrics + download each trained model):**  
-[https://snipofist.github.io/Deep_Learning-Drowsiness_Detection_Using_Infrared_Images/](https://snipofist.github.io/Deep_Learning-Drowsiness_Detection_Using_Infrared_Images/)
+[https://Avish16.github.io/Deep_Learning-Drowsiness_Detection_Using_Infrared_Images/](https://Avish16.github.io/Deep_Learning-Drowsiness_Detection_Using_Infrared_Images/)
 
 Pre-trained Keras checkpoints are also in the repo under [`weights/`](weights/). Copy the file you need into `models/` for local inference, or change `DEFAULT_MODEL_PATH` in `src/drowsiness/config.py`.
 
@@ -97,4 +97,6 @@ The CNNs reach **strong metrics on the curated MRL test split**. Real deployment
 
 ## Author
 
-- **LinkedIn:** [linkedin.com/in/hariramselvaraj](https://www.linkedin.com/in/hariramselvaraj/)
+- **Avi Sharma**
+- **GitHub:** [Avish16](https://github.com/Avish16)
+- **LinkedIn:** [linkedin.com/in/avi-sharma-1716361b8](https://www.linkedin.com/in/avi-sharma-1716361b8/)
