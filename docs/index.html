@@ -1,125 +1,197 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>IST-691 Deep Learning</title>
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DrowsAI — Driver Drowsiness Detection</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0A0F1E; color: #E0E0E0; padding: 2rem;
+    line-height: 1.6;
+  }
+  .container { max-width: 860px; margin: 0 auto; }
+  h1 {
+    font-size: 2rem; font-weight: 700;
+    background: linear-gradient(90deg, #00D4FF, #00FF88);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 0.3rem;
+  }
+  .subtitle { color: #8899AA; margin-bottom: 1.5rem; }
+  .badges { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 2rem; }
+  .badge {
+    border: 1px solid #00D4FF; color: #00D4FF;
+    border-radius: 20px; padding: 4px 14px; font-size: 0.8rem; font-weight: 600;
+  }
+  .demo-btn {
+    display: inline-block;
+    background: linear-gradient(135deg, #00D4FF, #00FF88);
+    color: #0A0F1E; font-weight: 700; font-size: 1rem;
+    padding: 12px 28px; border-radius: 8px; text-decoration: none;
+    margin-bottom: 2.5rem; transition: opacity 0.2s;
+  }
+  .demo-btn:hover { opacity: 0.85; }
+  h2 {
+    font-size: 1.2rem; color: #00D4FF;
+    border-bottom: 1px solid #1E2D3E;
+    padding-bottom: 0.4rem; margin: 2rem 0 1rem 0;
+  }
+  table {
+    width: 100%; border-collapse: collapse; margin-bottom: 1.5rem;
+  }
+  th {
+    background: #0D1B2A; color: #00D4FF;
+    padding: 10px 14px; text-align: left; font-size: 0.85rem;
+    border-bottom: 2px solid #1E2D3E;
+  }
+  td {
+    padding: 10px 14px; border-bottom: 1px solid #1E2D3E;
+    font-size: 0.9rem;
+  }
+  tr:hover { background: #0D1B2A; }
+  .highlight { color: #00FF88; font-weight: 700; }
+  .tag {
+    display: inline-block; background: #0D1B2A;
+    border: 1px solid #1E2D3E; border-radius: 4px;
+    padding: 2px 8px; font-size: 0.75rem; color: #8899AA;
+    margin: 2px;
+  }
+  .arch-box {
+    background: #0D1B2A; border: 1px solid #1E2D3E;
+    border-radius: 8px; padding: 1.2rem;
+    font-family: 'Courier New', monospace; font-size: 0.85rem;
+    color: #00D4FF; white-space: pre; overflow-x: auto;
+    margin-bottom: 1.5rem;
+  }
+  .footer {
+    margin-top: 3rem; padding-top: 1rem;
+    border-top: 1px solid #1E2D3E;
+    color: #556677; font-size: 0.8rem;
+  }
+  .footer a { color: #00D4FF; text-decoration: none; }
+  .warning {
+    background: rgba(255,180,0,0.08); border-left: 3px solid #FFB400;
+    border-radius: 4px; padding: 10px 14px;
+    color: #CCB000; font-size: 0.85rem; margin-bottom: 2rem;
+  }
+</style>
 </head>
 <body>
-  <header>
-    <h1 class="site-title">IST-691 Deep Learning</h1>
-    <h2 class="page-heading">Trained models &amp; evaluation</h2>
-    <p>
-      Binary CNNs on 64×64 grayscale MRL eye crops (awake vs. sleepy). Test set: <strong>16,981</strong> images
-      from <code>notebooks/02_baseline_cnn.ipynb</code>.
-    </p>
-  </header>
+<div class="container">
 
-  <main>
-    <p class="intro">
-      Metrics below come from the notebook run. Download Keras 3 compatible <code>.keras</code> weights from the
-      repository (links use GitHub <code>raw</code>).
-    </p>
+  <h1>👁️ DrowsAI</h1>
+  <p class="subtitle">Driver Drowsiness Detection · Deep Learning on Infrared Eye Images</p>
 
-    <section class="grid" aria-label="Model cards">
-      <article class="card">
-        <span class="badge">Baseline</span>
-        <h2>baseline_cnn_mrl</h2>
-        <p style="margin:0 0 0.5rem; color: var(--muted); font-size:0.85rem;">
-          Conv blocks + dense head; no extra driver-specific augmentation beyond standard training pipeline.
-        </p>
-        <dl class="metrics">
-          <dt>Test accuracy</dt>
-          <dd><strong>98.59%</strong></dd>
-          <dt>Test loss</dt>
-          <dd>0.045</dd>
-          <dt>Macro F1</dt>
-          <dd>~0.99</dd>
-        </dl>
-        <a class="btn" href="https://github.com/SNIPOFIST/Deep_Learning-Drowsiness_Detection_Using_Infrared_Images/raw/main/weights/baseline_cnn_mrl.keras">Download baseline_cnn_mrl.keras</a>
-      </article>
+  <div class="badges">
+    <span class="badge">Python 3.11</span>
+    <span class="badge">TensorFlow 2.x</span>
+    <span class="badge">CNN</span>
+    <span class="badge">MRL Eye Dataset</span>
+    <span class="badge">84,898 images</span>
+    <span class="badge">98.6% Accuracy</span>
+  </div>
 
-      <article class="card">
-        <span class="badge">Augmented</span>
-        <h2>cnn_mrl_driver_aug</h2>
-        <p style="margin:0 0 0.5rem; color: var(--muted); font-size:0.85rem;">
-          Training with flips / augmentation; tuned for driver-style use. Default for inference scripts.
-        </p>
-        <dl class="metrics">
-          <dt>Test accuracy</dt>
-          <dd><strong>98.15%</strong></dd>
-          <dt>Test loss</dt>
-          <dd>0.052</dd>
-          <dt>Macro F1</dt>
-          <dd>~0.98</dd>
-        </dl>
-        <a class="btn" href="https://github.com/SNIPOFIST/Deep_Learning-Drowsiness_Detection_Using_Infrared_Images/raw/main/weights/cnn_mrl_driver_aug.keras">Download cnn_mrl_driver_aug.keras</a>
-      </article>
+  <a href="STREAMLIT_URL_PLACEHOLDER" class="demo-btn">🚀 Try Live Demo</a>
 
-      <article class="card">
-        <span class="badge">Deep + aug</span>
-        <h2>cnn_mrl_driver_aug_deep</h2>
-        <p style="margin:0 0 0.5rem; color: var(--muted); font-size:0.85rem;">
-          Deeper CNN (extra conv block); early stopping during training.
-        </p>
-        <dl class="metrics">
-          <dt>Test accuracy</dt>
-          <dd><strong>98.39%</strong></dd>
-          <dt>Test loss</dt>
-          <dd>0.049</dd>
-          <dt>Macro F1</dt>
-          <dd>~0.98</dd>
-        </dl>
-        <a class="btn" href="https://github.com/SNIPOFIST/Deep_Learning-Drowsiness_Detection_Using_Infrared_Images/raw/main/weights/cnn_mrl_driver_aug_deep.keras">Download cnn_mrl_driver_aug_deep.keras</a>
-      </article>
-    </section>
+  <div class="warning">
+    ⚠️ Research and educational prototype only. Not for use in real vehicles without safety validation.
+  </div>
 
-    <section class="compare">
-      <h2>Side-by-side</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Model</th>
-            <th>Test accuracy</th>
-            <th>Notes</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>baseline_cnn_mrl.keras</code></td>
-            <td>98.59%</td>
-            <td>Strongest accuracy on held-out test in this run</td>
-          </tr>
-          <tr>
-            <td><code>cnn_mrl_driver_aug.keras</code></td>
-            <td>98.15%</td>
-            <td>Used by <code>scripts/detect_video.py</code> / <code>detect_live.py</code> by default</td>
-          </tr>
-          <tr>
-            <td><code>cnn_mrl_driver_aug_deep.keras</code></td>
-            <td>98.39%</td>
-            <td>More capacity; between baseline and aug on test</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
+  <h2>Trained Models & Evaluation</h2>
+  <p style="color:#8899AA;font-size:0.85rem;margin-bottom:1rem;">
+    Binary CNNs on 64×64 grayscale MRL infrared eye crops (awake vs. sleepy).
+    Metrics from <code>notebooks/02_baseline_cnn.ipynb</code>.
+  </p>
 
-    <section class="compare" style="margin-top:2rem;">
-      <h2>Evaluation (from notebook)</h2>
-      <p style="color: var(--muted); font-size: 0.9rem;">
-        Full <strong>classification report</strong>, <strong>confusion matrices</strong>, and <strong>ROC / AUC</strong>
-        curves are in <code>notebooks/02_baseline_cnn.ipynb</code>. Re-run the notebook to regenerate plots.
-      </p>
-    </section>
-  </main>
+  <table>
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>Test Accuracy</th>
+        <th>Test Loss</th>
+        <th>Macro F1</th>
+        <th>Download</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>baseline_cnn_mrl</td>
+        <td class="highlight">98.59%</td>
+        <td>0.045</td>
+        <td>~0.99</td>
+        <td><a href="https://github.com/Avish16/Deep_Learning-Drowsiness_Detection/raw/main/weights/baseline_cnn_mrl.keras" style="color:#00D4FF;">Download .keras</a></td>
+      </tr>
+      <tr>
+        <td>cnn_mrl_driver_aug</td>
+        <td class="highlight">98.15%</td>
+        <td>0.052</td>
+        <td>~0.98</td>
+        <td><a href="https://github.com/Avish16/Deep_Learning-Drowsiness_Detection/raw/main/weights/cnn_mrl_driver_aug.keras" style="color:#00D4FF;">Download .keras</a></td>
+      </tr>
+      <tr>
+        <td><strong>cnn_mrl_driver_aug_deep ★</strong></td>
+        <td class="highlight">98.39%</td>
+        <td>0.049</td>
+        <td>~0.98</td>
+        <td><a href="https://github.com/Avish16/Deep_Learning-Drowsiness_Detection/raw/main/weights/cnn_mrl_driver_aug_deep.keras" style="color:#00D4FF;">Download .keras</a></td>
+      </tr>
+    </tbody>
+  </table>
 
-  <footer>
-    <p>
-      <a href="https://github.com/SNIPOFIST/Deep_Learning-Drowsiness_Detection_Using_Infrared_Images">Repository</a>
-      ·
-      <a href="https://github.com/SNIPOFIST/Deep_Learning-Drowsiness_Detection_Using_Infrared_Images#readme">README</a>
-    </p>
-  </footer>
+  <h2>Model Architecture</h2>
+  <div class="arch-box">Input (64×64×1 grayscale)
+    │
+    ├─ Conv2D(32, 3×3, ReLU) → MaxPool(2×2)
+    ├─ Conv2D(64, 3×3, ReLU) → MaxPool(2×2)
+    ├─ Conv2D(128, 3×3, ReLU) → MaxPool(2×2)
+    │  [Deep model adds Conv2D(256) block]
+    │
+    ├─ Flatten → Dense(128, ReLU) → Dropout
+    └─ Dense(1, Sigmoid) → P(drowsy)</div>
+
+  <h2>Training Configuration</h2>
+  <table>
+    <tbody>
+      <tr><td style="color:#8899AA;width:200px;">Optimizer</td><td>Adam (lr = 1e-3)</td></tr>
+      <tr><td style="color:#8899AA;">Loss</td><td>Binary Cross-Entropy</td></tr>
+      <tr><td style="color:#8899AA;">Batch size</td><td>64</td></tr>
+      <tr><td style="color:#8899AA;">Input size</td><td>64 × 64 × 1 (grayscale)</td></tr>
+      <tr><td style="color:#8899AA;">Augmentation</td><td>RandomFlip(horizontal) + RandomRotation(±5°)</td></tr>
+      <tr><td style="color:#8899AA;">Dataset split</td><td>~60% train / 20% val / 20% test</td></tr>
+      <tr><td style="color:#8899AA;">Classes</td><td>awake (0) · sleepy (1)</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Dataset</h2>
+  <p style="margin-bottom:0.5rem;">
+    <strong>MRL Eye Dataset</strong> — 84,898 PNG grayscale infrared eye crops,
+    binary labels (awake/sleepy), ~50/50 balanced.
+  </p>
+  <p style="margin-bottom:1rem;">
+    <a href="https://www.kaggle.com/datasets/akashshingha850/mrl-eye-dataset" style="color:#00D4FF;">
+      View on Kaggle →
+    </a>
+  </p>
+
+  <h2>Tech Stack</h2>
+  <div>
+    <span class="tag">Python 3.11</span>
+    <span class="tag">TensorFlow 2.x</span>
+    <span class="tag">Keras</span>
+    <span class="tag">OpenCV</span>
+    <span class="tag">Streamlit</span>
+    <span class="tag">NumPy</span>
+    <span class="tag">Pillow</span>
+    <span class="tag">Jupyter</span>
+  </div>
+
+  <div class="footer">
+    <a href="https://github.com/Avish16/Deep_Learning-Drowsiness_Detection">Repository</a> ·
+    <a href="https://github.com/Avish16">Avish16</a> ·
+    IST-691 Deep Learning · Syracuse University
+  </div>
+
+</div>
 </body>
 </html>
