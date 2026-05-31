@@ -1,3 +1,6 @@
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Streamlit-FF4B4B?style=for-the-badge&logo=streamlit)](https://deeplearning-drowsinessdetection.streamlit.app/)
+[![GitHub Pages](https://img.shields.io/badge/Site-GitHub%20Pages-00D4FF?style=for-the-badge&logo=github)](https://avish16.github.io/Deep_Learning-Drowsiness_Detection/)
+
 # Drowsiness detection from infrared eye images
 
 ## Open the model page & download weights
